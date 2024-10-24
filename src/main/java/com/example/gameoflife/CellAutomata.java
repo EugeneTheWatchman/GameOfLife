@@ -151,13 +151,18 @@ public class CellAutomata extends Application {
             }
         });
 
-        slider = new Slider(0, 100, simulationSpeed);
+        slider = new Slider(0, 100, 1);
         slider.setShowTickMarks(true);
         slider.setOrientation(Orientation.HORIZONTAL);
-        slider.setPrefWidth(100);
+        slider.setPrefWidth(250);
         slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             simulationSpeed = (Double) newValue;
-            timeline.setRate(simulationSpeed);
+            if (simulationSpeed == 0)
+                timeline.pause();
+            else
+                timeline.setRate(simulationSpeed); // баг если ставить .setRate(0) - при обновлении на .setRate(положительное), резко несколько кадров исполняются
+            if ((Double) oldValue == 0)
+                timeline.play();
         });
 
         HBox hBox = new HBox(10);
